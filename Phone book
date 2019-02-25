@@ -1,0 +1,27 @@
+#!/bin/bash
+
+        clear
+        echo "***********************************"
+        PS3='Select an option: '
+
+        select options in "Display Entries" "Add Entries" "Search Entries" "Remove Entries" "Quit"
+        do
+                echo "You have selected: $options"
+                case $options in
+                        "Quit" ) echo "Bye, see you again!"; break 2; ;;
+                        "Display Entries" ) cat /home/jeffrey/own_scripts/addressvalues.txt ;;
+                        "Add Entries" ) read -p 'Enter yourname: ' name;
+                                        read -p 'Enter you phone number: ' number;
+                                        echo "$name $number" >> /home/jeffrey/own_scripts/addressvalues.txt
+                                        echo "Entry added succesfully" ;;
+                        "Search Entries" ) read -p 'Enter a name or number to be searched: ' search;
+                                           cat /home/jeffrey/own_scripts/addressvalues.txt | grep $search ;;
+                        "Remove Entries" ) read -p 'Enter a name or number to be edit: ' edit;
+                                                cat -b /home/jeffrey/own_scripts/addressvalues.txt | grep $edit
+                                                read -p "Please verify row by entering the first value of the results: " rownumber;
+                                                echo "Row number $rownumber successfully deleted."
+                                                printf -v rownumber "%sd" $rownumber
+                                                sed -i.bak "$rownumber" /home/jeffrey/own_scripts/addressvalues.txt ;;
+                        "*" ) echo "Please select a correct option!"    
+                esac
+        done
