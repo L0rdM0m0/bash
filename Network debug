@@ -1,0 +1,85 @@
+# Author : Jeffrey Imran Usoof
+# Date : 21-Feb-2019
+# Description : This script is a network debug tool, will give results of ping, mtr, arp scan and speedtest
+# Modified : 23-Feb-2019
+
+while true;
+do
+        # show menu
+        clear
+echo ""
+echo "            _\|/_"
+echo "            (o o)"
+echo "    +----oOO-{_}-OOo---------------------+"
+echo "    |            NETWORK DEBUG           |"
+echo "    | ================================== |"
+echo "    |            1. MTR results          |"
+echo "    |            2. Ping an IP           |"
+echo "    |             3. Speedtest           |"
+echo "    |            4. ARP results          |"
+echo "    |               5. Quit              |"
+echo "    +------------------------------------+"
+echo ""
+
+        read -p "Select your option: " options
+        echo
+
+        case $options in
+                "1" ) echo "Enter how many packets to be sent";
+                        read -p "(Note: if no value is inserted, default packets size would be 10) :  " packets ;
+                        if [ -z $packets ]; then
+                                echo "Setting to default value, sending 10 packets to www.google.com"
+                                echo
+                                mtr www.google.com -r -c 10
+                                echo
+                                read -p "Hit [Enter] to go back to the main menu"
+                        elif [ "$packets" -eq "$packets" ] 2> /dev/null ; then
+                                echo "Sending $packets packets to www.google.com"
+                                echo
+                                mtr www.google.com -r -c $packets
+                                echo
+                                read -p "Hit [Enter] to go back to the main menu"
+                        else
+                                echo "Setting to default value, sending 10 packets to www.google.com"
+                                echo
+                                mtr www.google.com -r -c 10
+                                echo
+                                read -p "Hit [Enter] to go back to the main menu"
+                        fi
+                        ;;
+                "2" ) read -p "Enter the IP address : " ipaddress
+                        if [ -z $ipaddress ]; then
+                                echo
+                                echo "No IP address given"
+                                echo
+                                read -p "Hit [Enter] to go back to the main menu"
+                        else
+                               echo
+                                echo "Sending 10 packets to $ipaddress"
+                                echo
+                                ping -c 10 $ipaddress
+                                echo
+                                read -p "Hit [Enter] to go back to the main menu"
+                        fi
+                        ;;
+                "3" ) #enter the speedtest entries here"
+                ;;
+                "4" ) if [ "$EUID" -ne 0 ]; then
+                        echo "You need to be as root to run this command"
+                        echo
+                        read -p "Hit [Enter] to go back to the main menu"
+                      else
+                        echo "Checking if the package is installed"
+                        #yum install arp-scan -y &> /dev/null
+                        apt-get install arp-scan -y &> /dev/null
+                        echo "Scanning the network . . . . . "
+                        echo
+                        arp-scan -l
+                        echo
+                        read -p "Hit [Enter] to go back to the main menu"
+                      fi
+                        ;;
+                "5" ) echo "Quitting Network Debug!"; echo; break 1;;
+                * ) echo "Invalid option entered!!!"; sleep 2;;
+        esac
+done
